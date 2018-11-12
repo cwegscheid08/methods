@@ -1,9 +1,8 @@
 module Enumerable
 
 	def my_each
-		self.length.times do |i|
-			yield self[i]
-		end
+		self.length.times { |i| yield(self[i]) }
+		self
 	end
 
 	def my_each_with_index
@@ -11,7 +10,9 @@ module Enumerable
 	end
 
 	def my_select
-		self.my_each { |i| yield i }
+		ary = []
+		self.my_each { |i| yield(i) ? ary.push(i) : i }
+		ary
 	end
 
 	def my_all?
@@ -78,22 +79,27 @@ puts ""
 
 # EACH
 puts "EACH:"
-ary.my_each { |x| print x }
+puts ary.each { |x| x }
 puts ""
-ary.each { |x| print x }
+puts ary.my_each { |x| x }
+puts ""
+puts ary.my_each { |x| x.to_s + "?"}
 puts "\n\n"
 
 # EACH_WITH_INDEX
 puts "EACH_WITH_INDEX:"
-ary.my_each_with_index { |num, i|  print "#{num} is at #{i}.\n" }
+ary.my_each_with_index { |num, i| print "#{num} is at #{i}.\n" }
+puts ""
 ary.each_with_index { |num, i| print "#{num} is at #{i}.\n" }
 puts ""
 
 # SELECT
 puts "SELECT:"
-ary.my_select { |x| print x%2 == 0 }
+print ary.my_select { |x| x%2 == 0 }
 puts ""
-ary.select { |x| print x%2 == 0 }
+print ary.select { |x|  x%2 == 0 }
+puts ""
+print ary.my_select { |x| x.even? }
 puts "\n\n"
 
 # ALL?
@@ -161,8 +167,8 @@ add_soda = Proc.new { |x| "#{x} more sodas please." }
 
 puts ary.to_s
 puts ary.my_map(&times_two).to_s
-puts ary.my_map(&add_soda)
 puts ary.my_map(&times_three).to_s
+puts ary.my_map(&add_soda)
 # puts ary.my_map(&times_two) { |x| x *= 3 }
 
 
